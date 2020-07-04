@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.8.9/brython.min.js">
+    </script>
+    <!--     <script src="https://cdn.jsdelivr.net/npm/brython@3.8.9/brython.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/brython@3.8.9/brython_stdlib.js">
+    </script> -->
+</head>
+
+<body onload="brython()">
+
+    <canvas id="game-board" width="400" height="400"></canvas>
+
+    <script type="text/python">
+
+        
+        from browser import document, html, window
+        from javascript import Math
+        
+        px = py = 10
+        gs = tc = 20
+        ax = ay = 15
+        xv = yv = 0
+        trail = []
+        tail = 5
+        
+        
+        def key_push(evt):
+            global px, py, tc, gs, ax, ay, xv, yv, trail, tail
+            key = evt.keyCode
+            if key == 37:
+                xv = -1
+                yv = 0
+            elif key == 38:
+                xv = 0
+                yv = -1
+            elif key == 39:
+                xv = 1
+                yv = 0
+            elif key == 40:
+                xv = 0
+                yv = 1
+        
+        def game():
+            global px, py, tc, gs, ax, ay, xv, yv, trail, tail
+            px += xv
+            py += yv
+            if px < 0:
+                px = tc-1
+            if px > tc-1:
+                px = 0
+            if py < 0:
+                py = tc-1
+            if py > tc-1:
+                py = 0
+            ctx.fillStyle = "black"
+            ctx.fillRect(0, 0, canvas.width, canvas.height)
+            ctx.fillStyle = "lime"
+            for i in range(len(trail)):
+                ctx.fillRect(trail[i][0]*gs, trail[i][1]*gs, gs-2, gs-2)
+                if trail[i][0] == px and trail[i][1] == py:
+                    tail = 5
+            trail.insert(0, [px, py])
+            while len(trail) > tail:
+                trail.pop()
+        
+            if ax == px and ay == py:
+                tail += 1
+                ax = Math.floor(Math.random()*tc)
+                ay = Math.floor(Math.random()*tc)
+            ctx.fillStyle = "red"
+            ctx.fillRect(ax*gs, ay*gs, gs-2, gs-2)
+
+        
+        canvas = document["game-board"]
+        ctx = canvas.getContext("2d")
+        document.addEventListener("keydown", key_push)
+        window.setInterval(game, 1000/15)
+        
+
+
+    
+    
+
+    
+
+    
+    
+</script>
+
+</body>
+
+</html>
