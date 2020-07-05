@@ -7,10 +7,27 @@
     <title>Snake</title>
 </head>
 
+
+<style>
+
+    canvas {
+        margin-top: 10%;
+        padding-left: 0;
+        padding-right: 0;
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+    }
+    
+</style>
+
 <body>
 
 <canvas id="game-board" width="400" height="400"></canvas>
 <script>
+
+    // CREDITS: 
+
     window.onload = function () {
         canv = document.getElementById("game-board");
         ctx = canv.getContext("2d");

@@ -7,48 +7,96 @@
     <title>Snake</title>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.8.9/brython.min.js">
     </script>
-    <!--     <script src="https://cdn.jsdelivr.net/npm/brython@3.8.9/brython.min.js">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/brython@3.8.9/brython_stdlib.js">
-    </script> -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <style>
+
+        h1 {
+            margin-top: 8%;
+            color: rgb(83, 238, 36);
+        }
+
+        h3 {
+            color:rgb(190, 187, 187);
+        }
+
+        h6 {
+            color:rgb(117, 117, 117);
+        }
+
+        body {
+            background-color: black;
+        }
+
+        canvas {
+            margin-top: 1%;
+            padding-left: 0;
+            padding-right: 0;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+            border: 1px;
+            border-style: solid;
+            border-color: #535353;
+        }
+
+    </style>
+
 </head>
 
 <body onload="brython()">
 
+    <h1 class="text-center">Snake built with Python!</h1>
     <canvas id="game-board" width="400" height="400"></canvas>
+    <br>
+    <h3 id="score" class="text-center">Score: 0</h3>
+    <br>
+    <h6 id="high-score" class="text-center">High Score: 0</h6>
 
     <script type="text/python">
 
-        
+
         from browser import document, html, window
         from javascript import Math
         
+        score = 0
+        high_score = 0
         px = py = 10
         gs = tc = 20
         ax = ay = 15
         xv = yv = 0
         trail = []
         tail = 5
+
+        pre_pause = [0,0]
+        paused = False
         
         
         def key_push(evt):
-            global px, py, tc, gs, ax, ay, xv, yv, trail, tail
+            global xv, yv, pre_pause, paused
             key = evt.keyCode
-            if key == 37:
+            if key == 37 and not paused:
                 xv = -1
                 yv = 0
-            elif key == 38:
+            elif key == 38 and not paused:
                 xv = 0
                 yv = -1
-            elif key == 39:
+            elif key == 39 and not paused:
                 xv = 1
                 yv = 0
-            elif key == 40:
+            elif key == 40 and not paused:
                 xv = 0
                 yv = 1
+            elif key == 32:
+                temp = [xv, yv]
+                xv = pre_pause[0]
+                yv = pre_pause[1]
+                pre_pause = [*temp]
+                paused = not paused
+
         
         def game():
-            global px, py, tc, gs, ax, ay, xv, yv, trail, tail
+            global px, py, tc, gs, ax, ay, trail, tail, score
             px += xv
             py += yv
             if px < 0:
@@ -65,6 +113,7 @@
             for i in range(len(trail)):
                 ctx.fillRect(trail[i][0]*gs, trail[i][1]*gs, gs-2, gs-2)
                 if trail[i][0] == px and trail[i][1] == py:
+                    score = 0
                     tail = 5
             trail.insert(0, [px, py])
             while len(trail) > tail:
@@ -74,22 +123,23 @@
                 tail += 1
                 ax = Math.floor(Math.random()*tc)
                 ay = Math.floor(Math.random()*tc)
+                score += 1
+            update_score(score)
             ctx.fillStyle = "red"
             ctx.fillRect(ax*gs, ay*gs, gs-2, gs-2)
+        
+        def update_score(new_score):
+            global high_score
+            document["score"].innerHTML = "Score: " + str(new_score)
+            if new_score > high_score:
+                document["high-score"].innerHTML = "High Score: " + str(new_score)
+                high_score = new_score
 
         
         canvas = document["game-board"]
         ctx = canvas.getContext("2d")
         document.addEventListener("keydown", key_push)
-        window.setInterval(game, 1000/15)
-        
-
-
-    
-    
-
-    
-
+        game_loop = window.setInterval(game, 1000/15)
     
     
 </script>
