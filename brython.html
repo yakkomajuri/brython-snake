@@ -115,7 +115,7 @@
                 ctx.fillRect(trail[i][0]*gs, trail[i][1]*gs, gs-2, gs-2)
                 if trail[i][0] == px and trail[i][1] == py:
                     score = score if paused else 0 
-                    tail = 5
+                    tail = tail if paused else 5
             trail.insert(0, [px, py])
             while len(trail) > tail:
                 trail.pop()

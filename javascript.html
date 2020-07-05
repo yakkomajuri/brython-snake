@@ -137,8 +137,7 @@
             for (var i = 0; i < trail.length; ++i) {
                 ctx.fillRect(trail[i].x * gs, trail[i].y * gs, gs - 2, gs - 2);
                 if (trail[i].x == px && trail[i].y == py) {
-                    tail = 5;
-
+                    tail = paused ? tail : 5;
                     score = paused ? score : 0;
                 }
             }
