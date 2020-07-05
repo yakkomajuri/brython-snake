@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snake</title>
+    <title>Brython Snake</title>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.8.9/brython.min.js">
     </script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
@@ -22,6 +22,22 @@
 
         h6 {
             color:rgb(117, 117, 117);
+        }
+
+        button {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: transparent !important;
+            border-color: rgb(155, 156, 155) !important;
+            color: rgb(155, 156, 155) !important;
+            font-size: 8px !important;
+            padding: 3px !important;
+        }
+
+        button:hover {
+            border-color: rgb(68, 241, 68) !important;
+            color: rgb(194, 196, 194) !important;
         }
 
         body {
@@ -52,7 +68,10 @@
     <h3 id="score" class="text-center">Score: 0</h3>
     <br>
     <h6 id="high-score" class="text-center">High Score: 0</h6>
-
+    <br>
+    <div class="text-center">
+        <button id="instructions-btn" class="btn btn-info">Instructions</button>
+    </div>
     <script type="text/python">
 
 
@@ -61,6 +80,7 @@
         
         score = 0
         high_score = 0
+
         px = py = 10
         gs = tc = 20
         ax = ay = 15
@@ -70,31 +90,7 @@
 
         pre_pause = [0,0]
         paused = False
-        
-        
-        def key_push(evt):
-            global xv, yv, pre_pause, paused
-            key = evt.keyCode
-            if key == 37 and not paused:
-                xv = -1
-                yv = 0
-            elif key == 38 and not paused:
-                xv = 0
-                yv = -1
-            elif key == 39 and not paused:
-                xv = 1
-                yv = 0
-            elif key == 40 and not paused:
-                xv = 0
-                yv = 1
-            elif key == 32:
-                temp = [xv, yv]
-                xv = pre_pause[0]
-                yv = pre_pause[1]
-                pre_pause = [*temp]
-                paused = not paused
-
-        
+   
         def game():
             global px, py, tc, gs, ax, ay, trail, tail, score
             px += xv
@@ -113,7 +109,7 @@
             for i in range(len(trail)):
                 ctx.fillRect(trail[i][0]*gs, trail[i][1]*gs, gs-2, gs-2)
                 if trail[i][0] == px and trail[i][1] == py:
-                    score = 0
+                    score = score if paused else 0 
                     tail = 5
             trail.insert(0, [px, py])
             while len(trail) > tail:
@@ -135,11 +131,37 @@
                 document["high-score"].innerHTML = "High Score: " + str(new_score)
                 high_score = new_score
 
+        def key_push(evt):
+            global xv, yv, pre_pause, paused
+            key = evt.keyCode
+            if key == 37 and not paused:
+                xv = -1
+                yv = 0
+            elif key == 38 and not paused:
+                xv = 0
+                yv = -1
+            elif key == 39 and not paused:
+                xv = 1
+                yv = 0
+            elif key == 40 and not paused:
+                xv = 0
+                yv = 1
+            elif key == 32:
+                temp = [xv, yv]
+                xv = pre_pause[0]
+                yv = pre_pause[1]
+                pre_pause = [*temp]
+                paused = not paused
+            
+        def show_instructions(evt):
+            window.alert("Use the arrow keys to move and press spacebar to pause the game.")
         
         canvas = document["game-board"]
         ctx = canvas.getContext("2d")
         document.addEventListener("keydown", key_push)
         game_loop = window.setInterval(game, 1000/15)
+        instructions_btn = document["instructions-btn"]
+        instructions_btn.addEventListener("click", show_instructions)
     
     
 </script>

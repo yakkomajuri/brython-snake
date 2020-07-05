@@ -4,97 +4,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snake</title>
+    <title>JavaScript Snake</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <style>
+        h1 {
+            margin-top: 8%;
+            color: rgb(83, 238, 36);
+        }
+
+        h3 {
+            color: rgb(190, 187, 187);
+        }
+
+        h6 {
+            color: rgb(117, 117, 117);
+        }
+
+        button {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: transparent !important;
+            border-color: rgb(155, 156, 155) !important;
+            color: rgb(155, 156, 155) !important;
+            font-size: 8px !important;
+            padding: 3px !important;
+        }
+
+        button:hover {
+            border-color: rgb(68, 241, 68) !important;
+            color: rgb(194, 196, 194) !important;
+        }
+
+        body {
+            background-color: black;
+        }
+
+        canvas {
+            margin-top: 1%;
+            padding-left: 0;
+            padding-right: 0;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+            border: 1px;
+            border-style: solid;
+            border-color: #535353;
+        }
+    </style>
+
 </head>
 
 
-<style>
-
-    canvas {
-        margin-top: 10%;
-        padding-left: 0;
-        padding-right: 0;
-        margin-left: auto;
-        margin-right: auto;
-        display: block;
-    }
-    
-</style>
-
 <body>
+    <h1 class="text-center">Snake built with JavaScript!</h1>
+    <h6 class="text-center">Not that impressive... Check out snake built with Python - in browser!</h1>
+    <canvas id="game-board" width="400" height="400"></canvas>
+    <br>
+    <h3 id="score" class="text-center">Score: 0</h3>
+    <br>
+    <h6 id="high-score" class="text-center">High Score: 0</h6>
+    <br>
+    <div class="text-center">
+        <button id="instructions-btn" class="btn btn-info">Instructions</button>
+    </div>
+    <script>
 
-<canvas id="game-board" width="400" height="400"></canvas>
-<script>
+        /*
+         Original Code Credits: Chris DeLeon of HomeTeam GameDev 
+         Modified by: Yakko Majuri
+        */
 
-    // CREDITS: 
+        let canvas, context;
 
-    window.onload = function () {
-        canv = document.getElementById("game-board");
-        ctx = canv.getContext("2d");
-        document.addEventListener("keydown", keyPush);
-        setInterval(game, 1000 / 15);
-    }
-    px = py = 10;
-    gs = tc = 20;
-    ax = ay = 15;
-    xv = yv = 0;
-    trail = [];
-    tail = 5;
-    function game() {
-        px += xv;
-        py += yv;
-        if (px < 0) {
-            px = tc - 1;
+        window.onload = function () {
+            canvas = document.getElementById("game-board");
+            ctx = canvas.getContext("2d");
+            document.addEventListener("keydown", keyPush);
+            setInterval(game, 1000 / 15);
+            let instructionsBtn = document.getElementById("instructions-btn");
+            instructionsBtn.addEventListener("click", showInstructions)
         }
-        if (px > tc - 1) {
-            px = 0;
-        }
-        if (py < 0) {
-            py = tc - 1;
-        }
-        if (py > tc - 1) {
-            py = 0;
-        }
-        ctx.fillStyle = "black";
-        ctx.fillRect(0, 0, canv.width, canv.height);
 
-        ctx.fillStyle = "lime";
-        for (var i = 0; i < trail.length; i++) {
-            ctx.fillRect(trail[i].x * gs, trail[i].y * gs, gs - 2, gs - 2);
-            if (trail[i].x == px && trail[i].y == py) {
-                tail = 5;
+        let score = 0;
+        let highScore = 0;
+
+        let px = py = 10;
+        let gs = tc = 20;
+        let ax = ay = 15;
+        let xv = yv = 0;
+        let trail = [];
+        let tail = 5;
+
+        let paused = false
+        let pre_pause = [0, 0]
+
+
+
+        function game() {
+            px += xv;
+            py += yv;
+            if (px < 0) {
+                px = tc - 1;
+            }
+            if (px > tc - 1) {
+                px = 0;
+            }
+            if (py < 0) {
+                py = tc - 1;
+            }
+            if (py > tc - 1) {
+                py = 0;
+            }
+            ctx.fillStyle = "black";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = "lime";
+            for (var i = 0; i < trail.length; ++i) {
+                ctx.fillRect(trail[i].x * gs, trail[i].y * gs, gs - 2, gs - 2);
+                if (trail[i].x == px && trail[i].y == py) {
+                    tail = 5;
+
+                    score = paused ? score : 0;
+                }
+            }
+            trail.push({ x: px, y: py });
+            while (trail.length > tail) {
+                trail.shift();
+            }
+
+            if (ax == px && ay == py) {
+                ++score;
+                ++tail;
+                ax = Math.floor(Math.random() * tc);
+                ay = Math.floor(Math.random() * tc);
+            }
+            ctx.fillStyle = "red";
+            ctx.fillRect(ax * gs, ay * gs, gs - 2, gs - 2);
+            updateScore(score)
+        }
+
+        function updateScore(newScore) {
+            document.getElementById("score").innerHTML = "Score: " + String(newScore);
+            if (newScore > highScore) {
+                document.getElementById("high-score").innerHTML = "High Score: " + String(newScore);
+                highScore = newScore;
             }
         }
-        trail.push({ x: px, y: py });
-        while (trail.length > tail) {
-            trail.shift();
+
+        function keyPush(evt) {
+            if (!paused) {
+                switch (evt.keyCode) {
+                    case 37:
+                        xv = -1; yv = 0;
+                        break;
+                    case 38:
+                        xv = 0; yv = -1;
+                        break;
+                    case 39:
+                        xv = 1; yv = 0;
+                        break;
+                    case 40:
+                        xv = 0; yv = 1;
+                        break;
+                }
+            }
+            if (evt.keyCode === 32) {
+                let temp = [xv, yv];
+                xv = pre_pause[0];
+                yv = pre_pause[1];
+                pre_pause = [...temp];
+                paused = !paused;
+            }
         }
 
-        if (ax == px && ay == py) {
-            tail++;
-            ax = Math.floor(Math.random() * tc);
-            ay = Math.floor(Math.random() * tc);
+        function showInstructions() {
+            window.alert("Use the arrow keys to move and press spacebar to pause the game.")
         }
-        ctx.fillStyle = "red";
-        ctx.fillRect(ax * gs, ay * gs, gs - 2, gs - 2);
-    }
-    function keyPush(evt) {
-        switch (evt.keyCode) {
-            case 37:
-                xv = -1; yv = 0;
-                break;
-            case 38:
-                xv = 0; yv = -1;
-                break;
-            case 39:
-                xv = 1; yv = 0;
-                break;
-            case 40:
-                xv = 0; yv = 1;
-                break;
-        }
-    }
-</script>
+
+    </script>
 
 </body>
+
 </html>
