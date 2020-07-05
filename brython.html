@@ -24,6 +24,10 @@
             color:rgb(117, 117, 117);
         }
 
+        a {
+            color: rgb(83, 238, 36);
+        }
+
         button {
             display: block;
             margin-left: auto;
@@ -62,7 +66,7 @@
 
 <body onload="brython()">
 
-    <h1 class="text-center">Snake built with Python!</h1>
+    <h1 class="text-center">Snake built with <a href="https://brython.info">Python!</a></h1>
     <canvas id="game-board" width="400" height="400"></canvas>
     <br>
     <h3 id="score" class="text-center">Score: 0</h3>
@@ -72,9 +76,10 @@
     <div class="text-center">
         <button id="instructions-btn" class="btn btn-info">Instructions</button>
     </div>
+
+
     <script type="text/python">
-
-
+        
         from browser import document, html, window
         from javascript import Math
         

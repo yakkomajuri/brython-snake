@@ -10,6 +10,7 @@
         integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
     <style>
+
         h1 {
             margin-top: 8%;
             color: rgb(83, 238, 36);
@@ -20,6 +21,10 @@
         }
 
         h6 {
+            color: rgb(117, 117, 117);
+        }
+
+        a {
             color: rgb(117, 117, 117);
         }
 
@@ -61,7 +66,7 @@
 
 <body>
     <h1 class="text-center">Snake built with JavaScript!</h1>
-    <h6 class="text-center">Not that impressive... Check out snake built with Python - in browser!</h1>
+    <h6 class="text-center">Not that impressive... Check out <a href="brython-snake.html">snake built with Python - in browser!</a></h1>
     <canvas id="game-board" width="400" height="400"></canvas>
     <br>
     <h3 id="score" class="text-center">Score: 0</h3>
@@ -78,7 +83,9 @@
          Modified by: Yakko Majuri
         */
 
-        let canvas, context;
+        'use strict'
+
+        let canvas, ctx;
 
         window.onload = function () {
             canvas = document.getElementById("game-board");
@@ -92,10 +99,14 @@
         let score = 0;
         let highScore = 0;
 
-        let px = py = 10;
-        let gs = tc = 20;
-        let ax = ay = 15;
-        let xv = yv = 0;
+        let px = 10;
+        let py = 10;
+        let gs = 20;
+        let tc = 20;
+        let ax = 15;
+        let ay = 15;
+        let xv = 0;
+        let yv = 0;
         let trail = [];
         let tail = 5;
 
