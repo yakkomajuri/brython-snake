@@ -81,6 +81,6 @@ def show_instructions(evt):
 canvas = document["game-board"]
 ctx = canvas.getContext("2d")
 document.addEventListener("keydown", key_push)
-game_loop = window.setInterval(game, 1000/15)
+game_loop = window.setInterval(game, 1000/10)
 instructions_btn = document["instructions-btn"]
 instructions_btn.addEventListener("click", show_instructions)
